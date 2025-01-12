@@ -18,7 +18,7 @@ module "aws_amplify" {
       branch_name            = "develop"
       domain_prefix          = "dev"
       enable_basic_auth      = true
-      basic_auth_credentials = base64encode("mysecurepassword")
+      basic_auth_credentials = base64encode("<username>:<password>")
     }
   ]
 }
