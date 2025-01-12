@@ -17,6 +17,7 @@ variable "domain_name" {
 
 variable "prod_branch_name" {
   type = string
+  default = "main"
 }
 
 variable "non_prod_branches" {
