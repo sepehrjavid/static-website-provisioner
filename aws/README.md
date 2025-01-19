@@ -1,32 +1,81 @@
-# AWS Static Website Module 
-This repository provides a Terraform module for deploying a static website on AWS.
+
+# AWS Static Website Module
+
+This Terraform module helps you deploy a static website on AWS seamlessly.
+
+**Note:** Cloning this repository is not required to use the module.
 
 ## Prerequisites
 
-### Install Terraform
+Before you begin, ensure the following:
 
-To install Terraform for your specific operating system, visit:
+1. You have a static website project hosted on GitHub.
+2. You have access to an AWS account with a user having sufficient permissions.
 
-``https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli``
+## Setup Instructions
 
-### Create Terraform Project
-1. Run the following commands to create a new directory and navigate to it: 
+### 1. Install Terraform
 
+Follow the official [Terraform installation guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) to set up Terraform for your operating system.
+
+### 2. Create a Terraform Project
+
+1. Create and navigate to a new directory for your Terraform project:
+   ```bash
+   mkdir my-website-resources && cd my-website-resources
+   ```
+
+2. Create a `main.tf` file in the directory and copy the content from the `example/main.tf` file of this module.
+
+3. Customize the configuration in `main.tf` to fit your requirements, such as website repository details and parameters.
+
+4. Initialize Terraform in your project directory:
+   ```bash
+   terraform init
+   ```
+
+5. Apply the Terraform configuration to deploy your resources:
+   ```bash
+   terraform apply
+   ```
+
+## Input Variables
+
+You can configure the module using the following variables:
+
+| Variable               | Type            | Description                                                                                      | Example                                      |
+|------------------------|-----------------|--------------------------------------------------------------------------------------------------|----------------------------------------------|
+| `app_name`             | `string`       | The name of your application.                                                                   | `"my-app"`                                   |
+| `app_repo`             | `string`       | The GitHub repository URL of your application.                                                  | `"https://github.com/example/app"`           |
+| `repo_oauth_token`     | `string`       | OAuth token for accessing the repository. Refer to [GitHub Token Guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens). | `"ghp_abcdef1234567890"`                     |
+| `domain_name`          | `string`       | The domain name for hosting the website.                                                        | `"example.com"`                              |
+| `prod_branch_name`     | `string`       | The name of the production branch in your GitHub repository.                                     | `"main"`                                     |
+| `non_prod_branches`    | `list(object)` | List of non-production branch details. See the structure and table below.                       | See example below.                           |
+
+### Non-Production Branch Object Structure
+
+Each object in the `non_prod_branches` list should follow this format:
+
+```hcl
+{
+  branch_name            = string       
+  domain_prefix          = string       
+  enable_basic_auth      = bool         
+  basic_auth_credentials = optional(string, null)
+}
 ```
-mkdir my-website-resources && cd my-website-resources
-```
 
-2. Create a file named ``main.tf``in your directory and copy the content from the ``main.tf`` file located in the example directory.
+### Non-Production Branch Variables
 
-3. Adjust the configuration parameters in ``main.tf`` to match your specific requirements and the details of your website repository.
+The following table explains the sub-variables for `non_prod_branches`:
 
-4. Run the following command to initialize Terraform:
-```
-terraform init
-```
+| Variable                 | Type            | Description                                                                                   | Example           |
+|--------------------------|-----------------|-----------------------------------------------------------------------------------------------|-------------------|
+| `branch_name`            | `string`       | The name of the branch.                                                                       | `"develop"`   |
+| `domain_prefix`          | `string`       | A domain prefix to distinguish environments.                                                  | `"dev"`       |
+| `enable_basic_auth`      | `bool`         | Whether to enable basic authentication for the branch.                                        | `true`            |
+| `basic_auth_credentials` | `string, null` | Optional credentials for basic authentication. Set to `null` if not required.                | `"username:password"` |
 
-5. Deploy your resources by executing:
+---
 
-```
-terraform apply
-```
+Note: If `enable_basic_auth` is set to `false`,  `basic_auth_credentials` is not required anymore.
