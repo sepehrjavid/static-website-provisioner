@@ -11,6 +11,7 @@ Before you begin, ensure the following:
 
 1. You have a static website project hosted on GitHub.
 2. You have access to an AWS account with a user having sufficient permissions.
+3. A domain resgistered in AWS route53. [Register a domain](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
 
 ## Setup Instructions
 
