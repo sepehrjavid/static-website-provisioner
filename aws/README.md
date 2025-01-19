@@ -39,6 +39,8 @@ Follow the official [Terraform installation guide](https://developer.hashicorp.c
    terraform apply
    ```
 
+Important note: Please note that in order to be able to modify your resources later, you must NOT remove or modify the terraform state file automatically created in this directory. Otherwise you will have to destroy the resources mannually. (Cloud based state file will come soon to this module.)
+
 ## Input Variables
 
 You can configure the module using the following variables:
@@ -79,3 +81,10 @@ The following table explains the sub-variables for `non_prod_branches`:
 ---
 
 Note: If `enable_basic_auth` is set to `false`,  `basic_auth_credentials` is not required anymore.
+
+## Destroy Instructions
+Simply move to the direcory you created in the setup section and perform terraform destroy command:
+
+```bash
+cd my-website-resources && terraform destroy
+```
