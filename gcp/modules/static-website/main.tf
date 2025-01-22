@@ -2,7 +2,7 @@ data "google_project" "project" {
 }
 
 resource "google_storage_bucket" "website_bucket" {
-  for_each                    = var.branches
+  for_each                    = toset(var.branches)
   name                        = "${each.value}-website-bucket"
   location                    = var.region
   storage_class               = "STANDARD"
@@ -23,9 +23,9 @@ resource "google_storage_bucket_iam_member" "website_bucket_public_access" {
 }
 
 module "ci-cd" {
-  count                      = var.enable_cicd ? 1 : 0
-  source                     = "../ci-cd"
-  website_buckets            = google_storage_bucket.website_bucket
+  count  = var.enable_cicd ? 1 : 0
+  source = "../ci-cd"
+  # website_buckets            = google_storage_bucket.website_bucket
   project_number             = data.google_project.project.number
   logging_project_id         = data.google_project.project.project_id
   region                     = var.region

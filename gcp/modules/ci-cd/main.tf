@@ -1,5 +1,5 @@
 resource "google_project_service" "project" {
-  for_each = ["secretmanager.googleapis.com", "cloudbuild.googleapis.com"]
+  for_each = toset(["secretmanager.googleapis.com", "cloudbuild.googleapis.com"])
   service  = each.value
 
   timeouts {
@@ -57,7 +57,7 @@ resource "google_cloudbuildv2_repository" "git_repository" {
 }
 
 resource "google_service_account" "website_build_sa" {
-  for_each     = var.branches
+  for_each     = toset(var.branches)
   account_id   = "${each.value}-website-build-sa"
   display_name = "website Cloud Build SA"
 }
@@ -69,17 +69,17 @@ resource "google_project_iam_member" "website_log_writer" {
   member   = "serviceAccount:${google_service_account.website_build_sa[each.key].email}"
 }
 
-resource "google_storage_bucket_iam_member" "build_sa_write_access" { # Match bucket with sa
-  for_each = var.website_buckets
-  bucket   = var.website_buckets[each.key].name
-  role     = "roles/storage.legacyBucketWriter"
-  member   = "serviceAccount:${google_service_account.website_build_sa.email}"
-}
+# resource "google_storage_bucket_iam_member" "build_sa_write_access" { # Match bucket with sa
+#   for_each = var.website_buckets
+#   bucket   = var.website_buckets[each.key].name
+#   role     = "roles/storage.legacyBucketWriter"
+#   member   = "serviceAccount:${google_service_account.website_build_sa.email}"
+# }
 
 resource "google_cloudbuild_trigger" "git_trigger" {
-  for_each        = var.branches
+  for_each        = toset(var.branches)
   name            = each.value
-  service_account = google_service_account.website_build_sa.id
+  service_account = google_service_account.website_build_sa[each.key].id
   filename        = "cloudbuild.yaml"
 
   repository_event_config {
