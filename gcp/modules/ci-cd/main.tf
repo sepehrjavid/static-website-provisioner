@@ -1,3 +1,6 @@
+data "google_client_config" "client_config" {}
+data "google_project" "project" {}
+
 resource "google_project_service" "project" {
   for_each = toset(["secretmanager.googleapis.com", "cloudbuild.googleapis.com"])
   service  = each.value
@@ -7,7 +10,8 @@ resource "google_project_service" "project" {
     update = "40m"
   }
 
-  disable_on_destroy = true
+  disable_on_destroy         = true
+  disable_dependent_services = true
 }
 
 resource "google_secret_manager_secret" "github_token_secret" {
@@ -16,6 +20,8 @@ resource "google_secret_manager_secret" "github_token_secret" {
   replication {
     auto {}
   }
+
+  depends_on = [google_project_service.project]
 }
 
 resource "google_secret_manager_secret_version" "github_token_secret_version" {
@@ -26,7 +32,7 @@ resource "google_secret_manager_secret_version" "github_token_secret_version" {
 data "google_iam_policy" "serviceagent_secretAccessor" {
   binding {
     role    = "roles/secretmanager.secretAccessor"
-    members = ["serviceAccount:service-${var.project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"]
+    members = ["serviceAccount:service-${data.google_project.project.number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"]
   }
 }
 
@@ -37,7 +43,7 @@ resource "google_secret_manager_secret_iam_policy" "policy" {
 }
 
 resource "google_cloudbuildv2_connection" "git_connection" {
-  location = var.region
+  location = data.google_client_config.client_config.region
   name     = "repository"
 
   github_config {
@@ -50,7 +56,7 @@ resource "google_cloudbuildv2_connection" "git_connection" {
 }
 
 resource "google_cloudbuildv2_repository" "git_repository" {
-  location          = var.region
+  location          = data.google_client_config.client_config.region
   name              = "website-repo"
   parent_connection = google_cloudbuildv2_connection.git_connection.name
   remote_uri        = var.github_repo_uri
@@ -64,7 +70,7 @@ resource "google_service_account" "website_build_sa" {
 
 resource "google_project_iam_member" "website_log_writer" {
   for_each = google_service_account.website_build_sa
-  project  = var.logging_project_id
+  project  = data.google_client_config.client_config.project
   role     = "roles/logging.logWriter"
   member   = "serviceAccount:${google_service_account.website_build_sa[each.key].email}"
 }
@@ -79,6 +85,7 @@ resource "google_project_iam_member" "website_log_writer" {
 resource "google_cloudbuild_trigger" "git_trigger" {
   for_each        = toset(var.branches)
   name            = each.value
+  location        = data.google_client_config.client_config.region
   service_account = google_service_account.website_build_sa[each.key].id
   filename        = "cloudbuild.yaml"
 
