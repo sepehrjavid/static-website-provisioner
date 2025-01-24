@@ -31,9 +31,9 @@ resource "google_storage_bucket_iam_member" "website_bucket_public_access" {
 }
 
 module "ci-cd" {
-  count  = var.enable_cicd ? 1 : 0
-  source = "../ci-cd"
-  # website_buckets            = google_storage_bucket.website_bucket
+  count                      = var.enable_cicd ? 1 : 0
+  source                     = "../ci-cd"
+  website_buckets            = google_storage_bucket.website_bucket
   branches                   = var.branches
   github_access_token        = var.github_access_token
   github_app_installation_id = var.github_app_installation_id

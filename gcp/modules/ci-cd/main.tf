@@ -75,12 +75,12 @@ resource "google_project_iam_member" "website_log_writer" {
   member   = "serviceAccount:${google_service_account.website_build_sa[each.key].email}"
 }
 
-# resource "google_storage_bucket_iam_member" "build_sa_write_access" { # Match bucket with sa
-#   for_each = var.website_buckets
-#   bucket   = var.website_buckets[each.key].name
-#   role     = "roles/storage.legacyBucketWriter"
-#   member   = "serviceAccount:${google_service_account.website_build_sa.email}"
-# }
+resource "google_storage_bucket_iam_member" "build_sa_write_access" {
+  for_each = var.branches
+  bucket   = var.website_buckets[each.value].name
+  role     = "roles/storage.legacyBucketWriter"
+  member   = "serviceAccount:${google_service_account.website_build_sa[each.key].email}"
+}
 
 resource "google_cloudbuild_trigger" "git_trigger" {
   for_each        = var.branches

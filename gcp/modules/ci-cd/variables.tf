@@ -1,5 +1,5 @@
 variable "branches" {
-  type = list(string)
+  type = set(string)
 }
 
 variable "github_access_token" {
@@ -15,6 +15,8 @@ variable "github_repo_uri" {
   type = string
 }
 
-# variable "website_buckets" {
-#   type = list(google_storage_bucket)
-# }
+variable "website_buckets" {
+  type = map(object({
+    name = string
+  }))
+}
