@@ -63,7 +63,7 @@ resource "google_cloudbuildv2_repository" "git_repository" {
 }
 
 resource "google_service_account" "website_build_sa" {
-  for_each     = toset(var.branches)
+  for_each     = var.branches
   account_id   = "${each.value}-website-build-sa"
   display_name = "website Cloud Build SA"
 }
@@ -83,7 +83,7 @@ resource "google_project_iam_member" "website_log_writer" {
 # }
 
 resource "google_cloudbuild_trigger" "git_trigger" {
-  for_each        = toset(var.branches)
+  for_each        = var.branches
   name            = each.value
   location        = data.google_client_config.client_config.region
   service_account = google_service_account.website_build_sa[each.key].id

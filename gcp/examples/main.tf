@@ -1,17 +1,17 @@
 provider "google" {
-  project = ""
+  project = "vpns-447820"
+  region  = "europe-north1"
 }
 
 provider "google-beta" {
-  project = ""
+  project = "vpns-447820"
+  region  = "europe-north1"
 }
-
 
 module "gcp_website" {
   source                     = "../modules/static-website"
-  region                     = "europe-north1"
-  github_access_token        = "token"
-  github_app_installation_id = "124"
-  github_repo_uri            = "https://github.com"
-  branches                   = ["dev", "main"]
+  github_access_token        = var.github_access_token
+  github_app_installation_id = var.github_app_installation_id
+  github_repo_uri            = var.github_repo_uri
+  branches                   = var.branches
 }

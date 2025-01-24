@@ -1,5 +1,7 @@
+data "google_client_config" "client_config" {}
+
 resource "random_string" "bucket_suffix" {
-  for_each = toset(var.branches)
+  for_each = var.branches
   length   = 4
   lower    = true
   upper    = false
@@ -8,9 +10,9 @@ resource "random_string" "bucket_suffix" {
 }
 
 resource "google_storage_bucket" "website_bucket" {
-  for_each                    = toset(var.branches)
+  for_each                    = var.branches
   name                        = "${each.value}-website-bucket-${random_string.bucket_suffix[each.key].result}"
-  location                    = var.region
+  location                    = data.google_client_config.client_config.region
   storage_class               = "STANDARD"
   force_destroy               = true
   uniform_bucket_level_access = true

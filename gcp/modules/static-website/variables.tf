@@ -1,9 +1,5 @@
-variable "region" {
-  type = string
-}
-
 variable "branches" {
-  type = list(string)
+  type = set(string)
 }
 
 variable "github_access_token" {
