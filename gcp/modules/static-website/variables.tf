@@ -24,3 +24,8 @@ variable "enable_cdn" {
   type    = bool
   default = true
 }
+
+variable "default_branch_name" {
+  type    = string
+  default = "main"
+}
