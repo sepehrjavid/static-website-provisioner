@@ -8,11 +8,12 @@ variable "enable_http_redirect" {
 }
 
 variable "dns_config" {
-  type = map(object({
+  type = object({
     set_dns_record = optional(bool, false)
-    zone_name      = optional(string)
-    domain_name    = optional(string)
-  }))
+    zone_name      = optional(string, null)
+    domain_name    = optional(string, null)
+  })
+  default = {}
 }
 
 variable "branches" {
@@ -27,5 +28,6 @@ variable "website_buckets" {
 }
 
 variable "default_branch_name" {
-  type = string
+  type    = string
+  default = "main"
 }

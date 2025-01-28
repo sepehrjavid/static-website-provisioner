@@ -2,17 +2,13 @@ variable "branches" {
   type = set(string)
 }
 
-variable "github_access_token" {
-  type      = string
+variable "github_config" {
+  type = object({
+    access_token        = string
+    app_installation_id = string
+    repo_uri            = string
+  })
   sensitive = true
-}
-
-variable "github_app_installation_id" {
-  type = string
-}
-
-variable "github_repo_uri" {
-  type = string
 }
 
 variable "enable_cicd" {
@@ -28,4 +24,13 @@ variable "enable_cdn" {
 variable "default_branch_name" {
   type    = string
   default = "main"
+}
+
+variable "dns_config" {
+  type = object({
+    set_dns_record = optional(bool, false)
+    zone_name      = optional(string, null)
+    domain_name    = optional(string, null)
+  })
+  default = {}
 }

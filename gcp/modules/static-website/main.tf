@@ -35,8 +35,8 @@ module "ci-cd" {
   source                     = "../ci-cd"
   website_buckets            = google_storage_bucket.website_bucket
   branches                   = var.branches
-  github_access_token        = var.github_access_token
-  github_app_installation_id = var.github_app_installation_id
-  github_repo_uri            = var.github_repo_uri
+  github_access_token        = var.github_config.access_token
+  github_app_installation_id = var.github_config.app_installation_id
+  github_repo_uri            = var.github_config.repo_uri
 }
 
