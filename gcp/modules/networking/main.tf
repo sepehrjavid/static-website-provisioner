@@ -17,6 +17,7 @@ resource "google_compute_backend_bucket" "backends" {
   for_each    = var.branches
   name        = each.key
   bucket_name = var.website_buckets[each.key].name
+  enable_cdn  = var.enable_cdn
 }
 
 resource "google_compute_url_map" "default" {
