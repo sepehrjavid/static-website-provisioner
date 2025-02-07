@@ -23,25 +23,25 @@ resource "google_compute_backend_bucket" "backends" {
 resource "google_compute_url_map" "default" {
   name = "https-lb"
 
-  default_service = var.website_buckets[var.default_branch_name].id
+  default_service = google_compute_backend_bucket.backends[var.default_branch_name].id
 
   dynamic "host_rule" {
     for_each = var.branches
     content {
-      hosts        = [each.key == var.default_branch_name ? var.dns_config.domain_name : "${env}.${var.dns_config.domain_name}"]
-      path_matcher = "${each.key}-matcher"
+      hosts        = [host_rule.value == var.default_branch_name ? var.dns_config.domain_name : "${host_rule.value}.${var.dns_config.domain_name}"]
+      path_matcher = "${host_rule.value}-matcher"
     }
   }
 
   dynamic "path_matcher" {
     for_each = var.branches
     content {
-      name            = "${each.key}-matcher"
-      default_service = google_compute_backend_bucket.backends[each.key].id
+      name            = "${path_matcher.value}-matcher"
+      default_service = google_compute_backend_bucket.backends[path_matcher.value].id
 
       path_rule {
         paths   = ["/*"]
-        service = google_compute_backend_bucket.backends[each.key].id
+        service = google_compute_backend_bucket.backends[path_matcher.value].id
       }
     }
   }
@@ -58,6 +58,6 @@ resource "google_compute_global_forwarding_rule" "default" {
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "443"
-  target                = google_compute_target_http_proxy.default.id
+  target                = google_compute_target_https_proxy.default.id
   ip_address            = google_compute_global_address.default.id
 }

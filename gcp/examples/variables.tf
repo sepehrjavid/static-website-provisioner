@@ -1,16 +1,8 @@
-variable "github_repo_uri" {
-  type = string
-}
-
-variable "github_access_token" {
-  type      = string
+variable "github_config" {
+  type = object({
+    access_token        = string
+    app_installation_id = string
+    repo_uri            = string
+  })
   sensitive = true
-}
-
-variable "github_app_installation_id" {
-  type = string
-}
-
-variable "branches" {
-  type = set(string)
 }

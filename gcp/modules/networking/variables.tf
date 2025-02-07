@@ -11,9 +11,8 @@ variable "dns_config" {
   type = object({
     set_dns_record = optional(bool, false)
     zone_name      = optional(string, null)
-    domain_name    = optional(string, null)
+    domain_name    = string
   })
-  default = {}
 }
 
 variable "branches" {

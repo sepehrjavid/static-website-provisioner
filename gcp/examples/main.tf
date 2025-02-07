@@ -9,9 +9,10 @@ provider "google-beta" {
 }
 
 module "gcp_website" {
-  source                     = "../modules/static-website"
-  github_access_token        = var.github_access_token
-  github_app_installation_id = var.github_app_installation_id
-  github_repo_uri            = var.github_repo_uri
-  branches                   = var.branches
+  source        = "../modules/static-website"
+  github_config = var.github_config
+  branches      = ["dev", "main"]
+  dns_config = {
+    domain_name = "sepehrjavid.com"
+  }
 }

@@ -21,6 +21,11 @@ variable "enable_cdn" {
   default = true
 }
 
+variable "enable_http_redirect" {
+  type    = bool
+  default = true
+}
+
 variable "default_branch_name" {
   type    = string
   default = "main"
@@ -28,9 +33,7 @@ variable "default_branch_name" {
 
 variable "dns_config" {
   type = object({
-    set_dns_record = optional(bool, false)
-    zone_name      = optional(string, null)
-    domain_name    = optional(string, null)
+    zone_name   = optional(string, null)
+    domain_name = string
   })
-  default = {}
 }

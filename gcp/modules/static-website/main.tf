@@ -40,3 +40,12 @@ module "ci-cd" {
   github_repo_uri            = var.github_config.repo_uri
 }
 
+module "networking" {
+  source               = "../networking"
+  dns_config           = var.dns_config
+  enable_http_redirect = var.enable_http_redirect
+  enable_cdn           = var.enable_cdn
+  default_branch_name  = var.default_branch_name
+  branches             = var.branches
+  website_buckets      = google_storage_bucket.website_bucket
+}
