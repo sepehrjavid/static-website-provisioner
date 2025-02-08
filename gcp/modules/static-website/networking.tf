@@ -1,16 +1,47 @@
-resource "google_compute_global_address" "default" {
-  name = "website-ip"
+###
+#Certificate Setup
+####
+
+resource "google_project_service" "cert_manager_api" {
+  service = "certificatemanager.googleapis.com"
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  disable_on_destroy         = true
+  disable_dependent_services = true
 }
 
-resource "google_compute_managed_ssl_certificate" "ssl_certificate" {
+resource "google_certificate_manager_dns_authorization" "default" {
+  for_each = var.branches
+  name     = "${each.key}-dns-auth"
+  domain   = each.key == var.default_branch_name ? var.dns_config.domain_name : "${each.key}.${var.dns_config.domain_name}"
+}
+
+resource "google_certificate_manager_certificate" "default" {
   name = "website-cert"
+
   managed {
-    domains = [
-      for env in var.branches : (
-        env == var.default_branch_name ? var.dns_config.domain_name : "${env}.${var.dns_config.domain_name}"
-      )
-    ]
+    domains            = [for auth in google_certificate_manager_dns_authorization.default : auth.domain]
+    dns_authorizations = [for auth in google_certificate_manager_dns_authorization.default : auth.id]
   }
+}
+
+resource "google_certificate_manager_certificate_map" "default" {
+  name = "website-cert-map"
+}
+
+resource "google_certificate_manager_certificate_map_entry" "default" {
+  name         = "cert-map-entry"
+  matcher      = "PRIMARY"
+  map          = google_certificate_manager_certificate_map.default.name
+  certificates = [google_certificate_manager_certificate.default.id]
+}
+
+resource "google_compute_global_address" "default" {
+  name = "website-ip"
 }
 
 resource "google_compute_backend_bucket" "backends" {
@@ -48,9 +79,9 @@ resource "google_compute_url_map" "default" {
 }
 
 resource "google_compute_target_https_proxy" "default" {
-  name             = "https-lb-proxy"
-  url_map          = google_compute_url_map.default.id
-  ssl_certificates = [google_compute_managed_ssl_certificate.ssl_certificate.id]
+  name            = "https-lb-proxy"
+  url_map         = google_compute_url_map.default.id
+  certificate_map = "//certificatemanager.googleapis.com/${google_certificate_manager_certificate_map.default.id}"
 }
 
 resource "google_compute_global_forwarding_rule" "default" {

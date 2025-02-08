@@ -1,5 +1,5 @@
 resource "google_project_service" "project" {
-  for_each = toset(["secretmanager.googleapis.com", "cloudbuild.googleapis.com"])
+  for_each = var.enable_cicd ? toset(["secretmanager.googleapis.com", "cloudbuild.googleapis.com"]) : []
   service  = each.value
 
   timeouts {

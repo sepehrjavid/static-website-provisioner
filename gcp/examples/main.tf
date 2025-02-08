@@ -16,3 +16,11 @@ module "gcp_website" {
     domain_name = "sepehrjavid.com"
   }
 }
+
+output "ip" {
+  value = module.gcp_website.lb_ip
+}
+
+output "cert_auth" {
+  value = module.gcp_website.dns_auth_creds
+}

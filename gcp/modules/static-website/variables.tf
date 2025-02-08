@@ -33,7 +33,8 @@ variable "default_branch_name" {
 
 variable "dns_config" {
   type = object({
-    zone_name   = optional(string, null)
-    domain_name = string
+    set_dns_config = optional(bool, false)
+    zone_name      = optional(string, null)
+    domain_name    = string
   })
 }
