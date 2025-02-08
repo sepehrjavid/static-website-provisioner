@@ -15,9 +15,10 @@ resource "google_project_service" "cert_manager_api" {
 }
 
 resource "google_certificate_manager_dns_authorization" "default" {
-  for_each = var.branches
-  name     = "${each.key}-dns-auth"
-  domain   = each.key == var.default_branch_name ? var.dns_config.domain_name : "${each.key}.${var.dns_config.domain_name}"
+  for_each   = var.branches
+  name       = "${each.key}-dns-auth"
+  domain     = each.key == var.default_branch_name ? var.dns_config.domain_name : "${each.key}.${var.dns_config.domain_name}"
+  depends_on = [google_project_service.cert_manager_api]
 }
 
 resource "google_certificate_manager_certificate" "default" {
@@ -30,7 +31,8 @@ resource "google_certificate_manager_certificate" "default" {
 }
 
 resource "google_certificate_manager_certificate_map" "default" {
-  name = "website-cert-map"
+  name       = "website-cert-map"
+  depends_on = [google_project_service.cert_manager_api]
 }
 
 resource "google_certificate_manager_certificate_map_entry" "default" {
