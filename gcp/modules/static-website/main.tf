@@ -1,5 +1,3 @@
-data "google_client_config" "client_config" {}
-
 resource "random_string" "bucket_suffix" {
   for_each = var.branches
   length   = 4
@@ -28,24 +26,4 @@ resource "google_storage_bucket_iam_member" "website_bucket_public_access" {
   bucket   = google_storage_bucket.website_bucket[each.key].name
   role     = "roles/storage.objectViewer"
   member   = "allUsers"
-}
-
-module "ci-cd" {
-  count                      = var.enable_cicd ? 1 : 0
-  source                     = "../ci-cd"
-  website_buckets            = google_storage_bucket.website_bucket
-  branches                   = var.branches
-  github_access_token        = var.github_config.access_token
-  github_app_installation_id = var.github_config.app_installation_id
-  github_repo_uri            = var.github_config.repo_uri
-}
-
-module "networking" {
-  source               = "../networking"
-  dns_config           = var.dns_config
-  enable_http_redirect = var.enable_http_redirect
-  enable_cdn           = var.enable_cdn
-  default_branch_name  = var.default_branch_name
-  branches             = var.branches
-  website_buckets      = google_storage_bucket.website_bucket
 }
