@@ -37,4 +37,9 @@ variable "dns_config" {
     zone_name      = optional(string, null)
     domain_name    = string
   })
+
+  validation {
+    condition     = !(var.dns_config.set_dns_config) || var.dns_config.zone_name != null
+    error_message = "zone_name cannot be null when set_dns_config is set to true"
+  }
 }

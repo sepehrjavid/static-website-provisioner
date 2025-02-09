@@ -14,6 +14,8 @@ module "gcp_website" {
   branches      = ["dev", "main"]
   dns_config = {
     domain_name = "sepehrjavid.com"
+    # set_dns_config = true
+    # zone_name      = "sepehrjavid-com"
   }
 }
 
