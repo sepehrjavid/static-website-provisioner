@@ -13,9 +13,9 @@ module "gcp_website" {
   github_config = var.github_config
   branches      = ["dev", "main"]
   dns_config = {
-    domain_name = "sepehrjavid.com"
-    # set_dns_config = true
-    # zone_name      = "sepehrjavid-com"
+    domain_name    = "sepehrjavid.com"
+    set_dns_config = true
+    zone_name      = "sepehrjavid-com"
   }
 }
 
