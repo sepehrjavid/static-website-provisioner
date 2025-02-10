@@ -1,21 +1,21 @@
 provider "google" {
-  project = "vpns-447820"
-  region  = "europe-north1"
+  project = "<project-id>"
+  region  = "<region>"
 }
 
 provider "google-beta" {
-  project = "vpns-447820"
-  region  = "europe-north1"
+  project = "<project-id>"
+  region  = "<region>"
 }
 
 module "gcp_website" {
   source        = "../modules/static-website"
   github_config = var.github_config
-  branches      = ["dev", "main"]
+  branches      = ["dev", "main"] # list of branches to be deployed
   dns_config = {
-    domain_name    = "sepehrjavid.com"
+    domain_name    = "example.com"
     set_dns_config = true
-    zone_name      = "sepehrjavid-com"
+    zone_name      = "example-com"
   }
 }
 
