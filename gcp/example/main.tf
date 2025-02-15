@@ -9,9 +9,13 @@ provider "google-beta" {
 }
 
 module "gcp_website" {
-  source        = "../modules/static-website"
-  github_config = var.github_config
-  branches      = ["dev", "main"] # list of branches to be deployed
+  source = "../modules/static-website"
+  github_config = {
+    access_token        = "1234"
+    repo_uri            = "https://github.com/myrepo.git"
+    app_installation_id = "1234"
+  }
+  branches = ["dev", "main"] # list of branches to be deployed
   dns_config = {
     domain_name    = "example.com"
     set_dns_config = true
