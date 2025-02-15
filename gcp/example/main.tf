@@ -9,7 +9,7 @@ provider "google-beta" {
 }
 
 module "gcp_website" {
-  source = "../modules/static-website"
+  source = "github.com/sepehrjavid/static-website-provisioner/gcp/modules/static-website?ref=main"
   github_config = {
     access_token        = "1234"
     repo_uri            = "https://github.com/myrepo.git"

@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "aws_amplify" {
-  source           = "../modules/amplify"
+  source           = "github.com/sepehrjavid/static-website-provisioner/aws/modules/amplify?ref=main"
   app_name         = "test_app"
   app_repo         = "https://github.com/example/test"
   repo_oauth_token = "test"

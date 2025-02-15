@@ -27,7 +27,7 @@ Follow the official [Terraform installation guide](https://developer.hashicorp.c
 
 2. Create a `main.tf` file in the directory and copy the content from the `example/main.tf` file of this module.
 
-3. Customize the configuration in `main.tf` to fit your requirements, such as website repository details and parameters.
+3. Customize the configuration in `main.tf` to fit your requirements, such as website repository details and parameters. Additionally, fill in the project id and the region you want to use to deploy your resources.
 
 4. Initialize Terraform in your project directory:
    ```bash
