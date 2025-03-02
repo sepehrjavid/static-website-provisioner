@@ -9,15 +9,19 @@ provider "google-beta" {
 }
 
 module "gcp_website" {
-  source = "github.com/sepehrjavid/static-website-provisioner/gcp/modules/static-website?ref=main"
-  github_config = {
-    access_token        = "1234"
-    repo_uri            = "https://github.com/myrepo.git"
-    app_installation_id = "1234"
+  source  = "sepehrjavid/static-website/google"
+  version = "1.1.0"
+  cicd = {
+    enable                = true
+    build_config_filename = "mycloudbuild.yaml"
+    github_config = {
+      access_token        = "ghp_abcdef1234567890"
+      app_installation_id = "1234567"
+      repo_uri            = "https://github.com/example/app.git"
+    }
   }
   branches = ["dev", "main"] # list of branches to be deployed
   dns_config = {
-    domain_name    = "example.com"
     set_dns_config = true
     zone_name      = "example-com"
   }
