@@ -10,14 +10,14 @@ provider "google-beta" {
 
 module "gcp_website" {
   source  = "sepehrjavid/static-website/google"
-  version = "1.1.0"
+  version = "1.1.1"
   cicd = {
     enable                = true
     build_config_filename = "mycloudbuild.yaml"
+    repo_uri              = "https://github.com/example/app.git"
     github_config = {
       access_token        = "ghp_abcdef1234567890"
       app_installation_id = "1234567"
-      repo_uri            = "https://github.com/example/app.git"
     }
   }
   branches = ["dev", "main"] # list of branches to be deployed
